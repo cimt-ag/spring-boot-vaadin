@@ -1,0 +1,220 @@
+buildscript {
+    configurations.classpath {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'com.burgstaller' && details.requested.name == 'okhttp-digest' && details.requested.version == '1.10') {
+                details.useTarget "io.github.rburgst:${details.requested.name}:1.21"
+                details.because 'Dependency has moved'
+            }
+        }
+    }
+    repositories {
+        mavenCentral()
+        maven { setUrl("https://maven.vaadin.com/vaadin-prereleases") }
+        maven { setUrl("https://repo.spring.io/milestone") }
+    }
+}
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'maven-publish'
+    id "com.google.cloud.artifactregistry.gradle-plugin" version "2.2.0"
+    id 'jvm-test-suite'
+    id 'jacoco'
+    id 'test-report-aggregation'
+    id 'jacoco-report-aggregation'
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependencies)
+    alias(libs.plugins.vaadin)
+    alias(libs.plugins.lombok)
+    alias(libs.plugins.asciidoctorPdf)
+    alias(libs.plugins.asciidoctorConvert)
+    alias(libs.plugins.asciidoctorGems)
+}
+
+repositories {
+    mavenCentral()
+    ruby.gems()
+    maven { setUrl("https://maven.vaadin.com/vaadin-prereleases") }
+    maven { setUrl("https://repo.spring.io/milestone") }
+    maven { setUrl("https://maven.vaadin.com/vaadin-addons") }
+}
+
+sourceCompatibility = '17'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+}
+
+dependencies {
+    implementation 'com.vaadin:vaadin-core'
+    implementation 'com.vaadin:vaadin-spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.security:spring-security-oauth2-jose'
+    implementation 'org.springframework.security:spring-security-oauth2-resource-server'
+    implementation 'com.h2database:h2'
+    implementation libs.hsqldb
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    implementation 'com.sun.mail:javax.mail:1.6.2'
+    implementation 'org.hibernate.orm:hibernate-community-dialects'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'com.vaadin:vaadin-testbench-junit5'
+    testImplementation 'io.projectreactor:reactor-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    asciidoctorGems libs.rouge
+    //asciidoctorGems libs.diagram
+}
+
+def pdfFile = layout.buildDirectory.file("docs/asciidocPdf/kontor-spring.pdf")
+def pdfArtifact = artifacts.add('archives', pdfFile.get().asFile) {
+    type 'pdf'
+    builtBy asciidoctorPdf
+}
+
+final BUILD_DATE = new Date().format('dd.MM.yyyy').toString()
+
+asciidoctorPdf {
+    dependsOn asciidoctorGemsPrepare
+
+    baseDirFollowsSourceFile()
+
+    asciidoctorj {
+        modules {
+            diagram.use()
+        }
+        requires 'rouge'
+        attributes 'build-gradle':       file('build.gradle'),
+                   'endpoint-url':       'https://www.thpeetz.de',
+                   'source-highlighter': 'rouge',
+                   'imagesdir':          './images',
+                   'toc':                'left',
+                   'toc-title':          'Inhaltsverzeichnis',
+                   'revdate':            BUILD_DATE,
+                   'revnumber':          { project.version.toString() },
+                   'revremark':          'Entwurf',
+                   'chapter-label':      '',
+                   'icons':              'font',
+                   'idprefix':           'id_',
+                   'idseparator':        '-',
+                   'docinfo1':           ''
+    }
+}
+
+build.dependsOn asciidoctorPdf
+
+dependencyManagement {
+    imports {
+        mavenBom libs.vaadin.bom.get().toString()
+    }
+}
+
+application {
+    mainClass = 'de.cimt.springbootvaadin.Application'
+}
+
+bootRun {
+    args = ["--spring.profiles.active=${project.properties['profile'] ?: 'prod'}"]
+}
+
+vaadin {
+    productionMode = true
+}
+
+testing {
+    suites {
+        configureEach {
+            useJUnitJupiter()
+            dependencies {
+                implementation project()
+                implementation 'com.vaadin:vaadin-core'
+                implementation 'com.vaadin:vaadin-spring-boot-starter'
+                implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+                implementation 'com.h2database:h2'
+                implementation libs.hsqldb
+                implementation libs.sqlite.jdbc
+                //runtimeOnly 'com.mysql:mysql-connector-j'
+                runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+                implementation('org.springframework.boot:spring-boot-starter-test') {
+                    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+                }
+                implementation 'org.springframework.security:spring-security-test'
+                implementation 'com.vaadin:vaadin-testbench-junit5'
+                implementation 'io.projectreactor:reactor-test'
+                runtimeOnly 'org.junit.platform:junit-platform-launcher'
+            }
+        }
+        test(JvmTestSuite) {
+            testType = TestSuiteType.UNIT_TEST
+            targets {
+                all {
+                    testTask.configure {
+                        reports {
+                            junitXml {
+                                outputPerTestCase = true // defaults to false
+                                mergeReruns = true // defaults to false
+                            }
+                        }
+                        finalizedBy(jacocoTestReport)
+                    }
+                }
+            }
+        }
+        integrationTest(JvmTestSuite) {
+            testType = "view-test"
+            targets {
+                all {
+                    testTask.configure {
+                        shouldRunAfter(test)
+                        finalizedBy(jacocoTestReport)
+                    }
+                }
+            }
+        }
+    }
+}
+
+tasks.named('check') {
+    dependsOn(testing.suites.integrationTest)
+    dependsOn(testing.suites.test)
+    dependsOn tasks.named('testAggregateTestReport', TestReport)
+    dependsOn tasks.named('integrationTestAggregateTestReport', TestReport)
+}
+
+jacocoTestReport {
+    dependsOn test, integrationTest
+    reports {
+        xml.required = true
+        csv.required = false
+    }
+}
+
+reporting {
+    reports {
+        testAggregateTestReport(AggregateTestReport) {
+            testType = TestSuiteType.UNIT_TEST
+        }
+        integrationTestAggregateTestReport(AggregateTestReport) {
+            testType = "view-test"
+        }
+        integrationTestCodeCoverageReport(JacocoCoverageReport) {
+            testType = "view-test"
+        }
+    }
+}
+
+wrapper {
+    gradleVersion = "8.6"
+}
+

@@ -1,0 +1,57 @@
+[versions]
+gradle = "8.6"
+args4j = "2.33"
+commonscli = "1.5.0"
+junit = "5.8.2"
+logback = "1.1.2"
+mockito = "1.9.5"
+picoli = "4.7.0"
+slf4j = "1.7.22"
+hsqldb = "2.7.1"
+sqlite = "3.25.2"
+spotbugs = "6.0.7"
+asciidoctor = "4.0.2"
+rouge = "3.15.0"
+diagram = "2.3.1"
+sonarqube = "3.3"
+cimtConventions = "1.0.0-SNAPSHOT"
+springboot = "3.2.5"
+springdependencies = "1.1.4"
+vaadin = "24.3.8"
+lombok = "8.6"
+
+[libraries]
+args4j = { module = "args4j:args4j", version.ref = "args4j" }
+commonscli = { module = "commons-cli:commons-cli", version.ref = "commonscli" }
+junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+logbackCore = { module = "ch.qos.logback:logback-core", version.ref = "logback" }
+logbackClassic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+mockito = { module = "org.mockito:mockito-all", version.ref = "mockito" }
+picocli = { module = "info.picocli:picocli", version.ref = "picoli" }
+slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+hsqldb = { module = "org.hsqldb:hsqldb", version.ref = "hsqldb" }
+sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite" }
+vaadin-bom = { module = "com.vaadin:vaadin-bom", version.ref = "vaadin" }
+asciidoctorGradleJvmGems = { module = "org.asciidoctor:asciidoctor-gradle-jvm-gems", version.ref= "asciidoctor" }
+asciidoctorGradleJvm = { module = "org.asciidoctor:asciidoctor-gradle-jvm", version.ref= "asciidoctor" }
+asciidoctorGradleJvmPdf = { module = "org.asciidoctor:asciidoctor-gradle-jvm-pdf", version.ref= "asciidoctor" }
+rouge = { module = "rubygems:rouge", version.ref = "rouge" }
+diagram = { module = "rubygems:asciidoctor-diagram", version.ref = "diagram" }
+
+[bundles]
+logback = ["logbackCore", "logbackClassic"]
+
+[plugins]
+spotbugs = { id = "com.github.spotbugs",  version.ref = "spotbugs" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
+asciidoctorPdf = { id = "org.asciidoctor.jvm.pdf", version.ref = "asciidoctor" }
+asciidoctorConvert = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctor" }
+asciidoctorGems = { id = "org.asciidoctor.jvm.gems", version.ref = "asciidoctor" }
+javaConvention = { id = "de.cimt.java-conventions", version.ref = "cimtConventions" }
+applicationConvention  = { id = "de.cimt.application-conventions", version.ref = "cimtConventions" }
+libraryConvention = { id = "de.cimt.library-conventions", version.ref = "cimtConventions" }
+asciidoctorConvention = { id = "de.cimt.asciidoctor-conventions", version.ref = "cimtConventions" }
+spring-boot = { id = "org.springframework.boot", version.ref = "springboot"}
+spring-dependencies = { id  = "io.spring.dependency-management", version.ref = "springdependencies" }
+vaadin = { id = "com.vaadin", version.ref = "vaadin" }
+lombok = { id = "io.freefair.lombok", version.ref = "lombok" }
