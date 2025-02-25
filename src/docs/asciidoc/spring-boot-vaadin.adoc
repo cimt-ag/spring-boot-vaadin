@@ -1,0 +1,46 @@
+= spring-boot-vaadin: Entwicklung mit Spring Boot und dem Vaadin Framework
+:author: Thomas Peetz
+:email: <thomas.peetz@cimt-ag.de>
+:sectnums:
+:sectnumlevels: 4
+:toc:
+:toclevels: 4
+:table-caption!:
+:counter: table-number: 0
+
+[title="Dokumenthistorie", id="Table-{counter:table-number}", options="header"]
+|===
+| Version | Datum      | Autor        | Änderungsgrund / Bemerkungen
+| 0.1.0   | 22.02.2025 | Thomas Peetz | Ersterstellung
+|===
+
+== Allgemeines
+
+=== Zweck des Repository
+
+Das Projekt <<<spring-boot-vaadin>>> dient als Beispiel für Projekte mit den Frameworks <<<spring-boot>>> und <<<vaadin>>>.
+
+[appendix,bibliography]
+[bibliography]
+== Referenzen
+
+- [[[asciidoctor, adoc]]] http://asciidoctor.org
+- [[[gradle]]] http://www.gradle.org
+- [[[spring-boot]]] Spring Boot
+- [[[vaadin]]] Vaadin Framework
+- [[[spring-boot-vaadin]]] https://github.com/cimt-ag/spring-boot-vaadin.git
+
+
+[appendix,glossary]
+== Glossar
+
+[appendix, index]
+== Index
+
+[appendix]
+== Abbildungsverzeichnis
+
+[appendix]
+== Tabellenverzeichnis
+
+<<Table-1, Tabelle 1>> <<Table-1>>

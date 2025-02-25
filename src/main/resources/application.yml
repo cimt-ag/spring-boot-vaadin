@@ -1,5 +1,5 @@
 server:
-  port: 8085
+  port: 8088
 app:
   name: 'Spring Boot Vaadin'
   shortName: 'Spring Boot Vaadin'
@@ -11,29 +11,31 @@ spring:
     add-properties: false
   datasource:
     initialization-mode: always
+    # Use MariaDB for persistence
     #driverClassName: org.mariadb.jdbc.Driver
     #url: jdbc:mariadb://localhost:3306/database
     #username: 'database'
     #password: 'database'
-    driverClassName: org.hsqldb.jdbc.JDBCDriver
-    url: jdbc:hsqldb:file:springbootvaadinHSQLDB
-    username: 'sa'
-    password: 'sa'
-  #jpa
-    #database-platform: org.hibernate.community.dialect.SQLiteDialect
-  #datasource
+    
+    # Use SQLite for persistence, additionally to the following lines add the line under jpa (see lines below)
     #driverClassName: org.sqlite.JDBC
-    #url: "jdbc:sqlite:file:./kontorDb?cache=shared"
+    #url: "jdbc:sqlite:file:./spvDb?cache=shared"
     #username=sa
     #password=sa
+    
+    # use HSQlDB for persistence
+    driverClassName: org.hsqldb.jdbc.JDBCDriver
+    url: jdbc:hsqldb:file:sbvHSQLDB
+    username: 'sa'
+    password: 'sa'
   jpa:
+    #database-platform: org.hibernate.community.dialect.SQLiteDialect
     defer-datasource-initialization: true
-    #hibernate.ddl-auto=create-drop
     hibernate:
-      #ddl-auto: update
-      ddl-auto: create-drop
-      #show-sql: false
-    show-sql: true
+      ddl-auto: update
+      #ddl-auto: create-drop
+    show-sql: false
+    #show-sql: true
   sql:
     init:
       mode: never
@@ -60,10 +62,3 @@ logging:
 jwt:
     auth:
       secret: 'J6GOtcwC2NJI1l0VkHu20PacPFGTxpirBxWwynoHjsc='
-mail:
-    protocol: 'imap'
-    host: 'corky.svpdata.eu'
-    port: 143
-    userName: 'thomas.peetz@thpeetz.de'
-    password: 'fS9f4JYDIO7A'
-    starttls: true

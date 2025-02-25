@@ -77,7 +77,7 @@ dependencies {
     //asciidoctorGems libs.diagram
 }
 
-def pdfFile = layout.buildDirectory.file("docs/asciidocPdf/kontor-spring.pdf")
+def pdfFile = layout.buildDirectory.file("docs/asciidocPdf/spring-boot-vaadin.pdf")
 def pdfArtifact = artifacts.add('archives', pdfFile.get().asFile) {
     type 'pdf'
     builtBy asciidoctorPdf
