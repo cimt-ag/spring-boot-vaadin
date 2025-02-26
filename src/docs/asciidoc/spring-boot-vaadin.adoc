@@ -1,7 +1,6 @@
-= Projektbeschreibung kontor-spring: Entwicklungs- und Projekthandbuch
+= spring-boot-vaadin: Entwicklung mit Spring Boot und dem Vaadin Framework
 :author: Thomas Peetz
 :email: <thomas.peetz@cimt-ag.de>
-:doctype: book
 :sectnums:
 :sectnumlevels: 4
 :toc:
@@ -19,22 +18,22 @@
 
 === Zweck des Repository
 
-[bibliography]
+[appendix,bibliography]
 == Referenzen
 
-- [[[asciidoctor]]] http://asciidoctor.org
+- [[[asciidoctor, adoc]]] http://asciidoctor.org
 - [[[gradle]]] http://www.gradle.org
 
-[glossary]
+[appendix,glossary]
 == Glossar
 
-[index]
+[appendix, index]
 == Index
 
-== Verzeichnisse
+[appendix]
+== Abbildungsverzeichnis
 
-=== Abbildungsverzeichnis
-
-=== Tabellenverzeichnis
+[appendix]
+== Tabellenverzeichnis
 
 <<Table-1, Tabelle 1>> <<Table-1>>
