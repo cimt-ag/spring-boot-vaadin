@@ -18,11 +18,18 @@
 
 === Zweck des Repository
 
+Das Projekt <<<spring-boot-vaadin>>> dient als Beispiel für Projekte mit den Frameworks <<<spring-boot>>> und <<<vaadin>>>.
+
 [appendix,bibliography]
+[bibliography]
 == Referenzen
 
 - [[[asciidoctor, adoc]]] http://asciidoctor.org
 - [[[gradle]]] http://www.gradle.org
+- [[[spring-boot]]] Spring Boot
+- [[[vaadin]]] Vaadin Framework
+- [[[spring-boot-vaadin]]] https://github.com/cimt-ag/spring-boot-vaadin.git
+
 
 [appendix,glossary]
 == Glossar
