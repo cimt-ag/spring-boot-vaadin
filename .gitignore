@@ -28,3 +28,4 @@ vite.config.ts
 vite.generated.ts
 package-lock.json
 package.json
+.factorypath

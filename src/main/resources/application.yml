@@ -1,5 +1,5 @@
 server:
-  port: 8088
+  port: 8080
 app:
   name: 'Spring Boot Vaadin'
   shortName: 'Spring Boot Vaadin'

@@ -1,13 +1,11 @@
 package de.cimt.springbootvaadin.view;
 
+import org.springframework.context.annotation.Scope;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.contextmenu.ContextMenu;
-import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -15,12 +13,12 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+
 import de.cimt.springbootvaadin.config.AdminConstants;
 import de.cimt.springbootvaadin.model.ModuleData;
 import de.cimt.springbootvaadin.services.ModuleService;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Scope;
 
 @Slf4j
 @SpringComponent
@@ -39,27 +37,11 @@ public class ModuleDataView extends VerticalLayout {
             .setHeader("Geändert").setResizable(true).setSortable(true);
     Grid.Column<ModuleData> nameColumn = grid.addColumn(ModuleData::getModuleName)
             .setHeader("Name").setResizable(true).setSortable(true);
-    Grid.Column<ModuleData> reviewColumn = grid.addComponentColumn(moduleData -> createStatusIcon(moduleData.getImportData())).
+    Grid.Column<ModuleData> reviewColumn = grid.addComponentColumn(moduleData -> StatusIcon.create(moduleData.getImportData())).
             setHeader(AdminConstants.DATA_IMPORT).setWidth("6rem").setSortable(true);
     TextField searchField = new TextField();
     ModuleDataForm form;
     ModuleService service;
-
-    private static class ColumnToggleContextMenu extends ContextMenu {
-        public ColumnToggleContextMenu(Component target) {
-            super(target);
-            setOpenOnClick(true);
-        }
-
-        void addColumnToggleItem(String label, Grid.Column<ModuleData> column) {
-            MenuItem menuItem = this.addItem(label, e -> {
-                column.setVisible(e.getSource().isChecked());
-            });
-            menuItem.setCheckable(true);
-            menuItem.setChecked(column.isVisible());
-            menuItem.setKeepOpen(true);
-        }
-    }
 
     public ModuleDataView(ModuleService service) {
         this.service = service;
@@ -89,19 +71,6 @@ public class ModuleDataView extends VerticalLayout {
         form.addSaveListener(this::saveModuleData);
         form.addDeleteListener(this::deleteModuleData);
         form.addCloseListener(e -> closeEditor());
-    }
-
-    private Icon createStatusIcon(boolean status) {
-        Icon icon;
-        if (status) {
-            icon = VaadinIcon.CHECK.create();
-            icon.getElement().getThemeList().add("badge success");
-        } else {
-            icon = VaadinIcon.CLOSE_SMALL.create();
-            icon.getElement().getThemeList().add("badge error");
-        }
-        icon.getStyle().set("padding", "var(--lumo-space-xs");
-        return icon;
     }
 
     private void saveModuleData(ModuleDataForm.SaveEvent event) {
@@ -135,11 +104,11 @@ public class ModuleDataView extends VerticalLayout {
         Button addModuleDataButton = new Button("Add module", click -> addModuleData());
         Button menuButton = new Button("Show/Hide Columns");
         menuButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        ColumnToggleContextMenu columnToggleContextMenu = new ColumnToggleContextMenu(menuButton);
-        columnToggleContextMenu.addColumnToggleItem("ID", idColumn);
-        columnToggleContextMenu.addColumnToggleItem("Erstellt", createdColumn);
-        columnToggleContextMenu.addColumnToggleItem("Geändert", modifiedColumn);
-        columnToggleContextMenu.addColumnToggleItem("Name", nameColumn);
+        ColumnToggleContextMenu<ModuleData> columnToggleContextMenu = new ColumnToggleContextMenu<>(menuButton);
+        columnToggleContextMenu.addColumnToggleItem(idColumn);
+        columnToggleContextMenu.addColumnToggleItem(createdColumn);
+        columnToggleContextMenu.addColumnToggleItem(modifiedColumn);
+        columnToggleContextMenu.addColumnToggleItem(nameColumn);
         columnToggleContextMenu.addColumnToggleItem(AdminConstants.DATA_IMPORT, reviewColumn);
         HorizontalLayout toolbar = new HorizontalLayout(searchField, addModuleDataButton, menuButton);
         toolbar.addClassName("toolbar");

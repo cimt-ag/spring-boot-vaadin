@@ -128,6 +128,16 @@ bootRun {
     args = ["--spring.profiles.active=${project.properties['profile'] ?: 'prod'}"]
 }
 
+task dockerImage(type: Exec) {
+    dependsOn["bootJar"]
+    commandLine "docker", "build", ".", "-t", "spring-boot-vaadin:${project.version}", "-t", "spring-boot-vaadin"
+}
+
+task dockerCompose(type: Exec) {
+    dependsOn "dockerImage", "bootJar"
+    commandLine "docker", "compose", "up", "-d", "--build"
+}
+
 vaadin {
     productionMode = true
 }
